@@ -31,16 +31,14 @@ def CreateUser(request):
 @api_view(['POST'])
 def login(request):
     try:
-        user = User.objects.get(username=request.data['username'])
+        username = request.data['username']
+        user_password = request.data['password']
+
+        user = User.objects.get(username = username)
+        if user.check_password(user_password):
         
-        
+            token, created = Token.objects.get_or_create(user=user)
+        return Response({'Logged In': user.username,'email':user.email,'token':token.key})
     except:
-        return Response('User does exits')
-    if user.check_password(request.data['password']):
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({'token':token.key})
+        return Response("User Does Not Exit")
     
-    return Response({
-        'username': user.username,
-        'email':user.email
-    })
