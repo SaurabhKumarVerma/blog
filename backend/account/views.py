@@ -32,7 +32,7 @@ def CreateUser(request):
 def login(request):
     try:
         user = User.objects.get(username=request.data['username'])
-        login_user = request.data
+        
         
     except:
         return Response('User does exits')
