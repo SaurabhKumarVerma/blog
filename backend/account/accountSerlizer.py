@@ -17,3 +17,6 @@ class AccountSerlizers(serializers.ModelSerializer):
                 {'email':'email is Already used'}
             )
         return attrs
+    
+    def create(self, validated_data):
+        return User.objects.create_user(validated_data)
