@@ -1,0 +1,15 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "askForPassword": true,
+            "driver": "PostgreSQL",
+            "database": "blogdb",
+            "username": "postgres",
+            "name": "postgres"
+        }
+    ],
+    "git.ignoreLimitWarning": true
+}
