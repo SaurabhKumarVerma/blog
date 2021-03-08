@@ -9,10 +9,14 @@ from rest_framework.response import Response
 from .accountSerlizer import AccountSerlizers
 from django.contrib.auth import get_user_model
 from rest_framework.authtoken.models import Token
+from django.views.decorators.csrf import csrf_exempt
 # from .models import RegisterUser
 
 User = get_user_model()
+
+@csrf_exempt
 @api_view(['POST'])
+# @permission_classes([sessionA])
 def CreateUser(request):
     if request.method == 'POST':
         serilized = AccountSerlizers(data=request.data)
@@ -27,18 +31,18 @@ def CreateUser(request):
     return Response({
         'User_Registered':'User Registed Suceesfully'
         })
-
+@csrf_exempt
 @api_view(['POST'])
 def login(request):
     try:
-        username = request.data['username']
+        user_email = request.data['email']
         user_password = request.data['password']
 
-        user = User.objects.get(username = username)
+        user = User.objects.get(email = user_email)
         if user.check_password(user_password):
         
             token, created = Token.objects.get_or_create(user=user)
-        return Response({'Logged In': user.username,'email':user.email,'token':token.key})
+        return Response({'Logged In': user.email,'user':user.username,'token':token.key})
     except:
         return Response("User Does Not Exit")
     
