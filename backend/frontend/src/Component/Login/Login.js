@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import 'bootstrap/dist/css/bootstrap.min.css'
 // import './App.css'
-import { useHistory } from "react-router-dom";
+import { history, Redirect } from "react-router-dom";
 
 
 
@@ -13,56 +13,84 @@ export class Login extends Component {
         super(props)
         this.state={
             password:'',
-            email:''
+            email:'',
+            loginedin: false
+            
         }
     }
    
     handleChange = (e) => {
         this.setState({[e.target.name]:e.target.value})
     }
-
+    
     submitHandler = e =>{
         // const history = useHistory();
 
         e.preventDefault()
+        
+        
         console.log(this.state)
-        axios.post('http://127.0.0.1:8000/login/',this.state)
+         axios.post('http://127.0.0.1:8000/login/',this.state)
             
             .then(res => {
                 
                 // res.send(this.state)
-                console.log(res)
-                // this.props.history.push('/landing')
+                console.log(res.data)
+                // console.log(res.data.token)
+                this.props.history.push('/landing')
                 console.log('Successfully Login');
+                // console.log(res.data.access)
+                localStorage.setItem('access_token',res.data.access)
+                localStorage.getItem('access_token')
+                localStorage.setItem('username',res.data.username)
+                localStorage.getItem('username')
+                localStorage.setItem('id',res.data.access)
+                console.log(localStorage.getItem('id'))
+                this.setState({loginedin:true})
+               
             })
             .catch(error => {
                 console.log(error)
             })
+
+
+            
+
+
+    }
+
+    handleClick = () => {
+        // this.props.history.push("/landing");
+       
     }
 
     render() {
+        if (this.state.loginedin == true){
+            this.props.history.push("/landing")
+        }
         const { password,email} = this.state
+        
         return (
             <div>
-                {/* <form onSubmit={this.submitHandler}>
+                <form onSubmit={this.submitHandler}>
 
                     <input type='password' name='password' placeholder='Password' onChange={this.handleChange} value={password}></input><br/>
                     <input type='text' name='email' placeholder='Email'onChange={this.handleChange} value={email}></input><br/>
 
-                    <button type='submit'>Register</button>
-                </form> */}
+                    <button type='submit' onClick={this.handleClick} >Register</button>
+                </form>
 
-                    <form>
+                    {/* <form>
 
                     <h3>Log in</h3>
                     <div className='Card'>                   <div className="form-group">
                         <label>Email</label>
-                        <input type="email" className="form-control" placeholder="Enter email" />
+                        <input type="email" onChange={this.handleChange} value={email} className="form-control" placeholder="Enter email" />
                     </div>
 
                     <div className="form-group">
                         <label>Password</label>
-                        <input type="password" className="form-control" placeholder="Enter password" />
+                        <input type="password" onChange={this.handleChange} value={password} className="form-control" placeholder="Enter password" />
                     </div>
 
                     <div className="form-group">
@@ -72,13 +100,13 @@ export class Login extends Component {
                         </div>
                     </div>
 
-                    <button type="submit" className="btn btn-dark btn-lg btn-block">Sign in</button>
+                    <button type='submit' onClick={this.handleChange} className="btn btn-dark btn-lg btn-block">Sign in</button>
                     <p className="forgot-password text-right">
-                        Forgot <a href="#">password?</a>
+                        
                     </p>
                     </div>
  
-                    </form>
+                    </form> */}
 
 
 

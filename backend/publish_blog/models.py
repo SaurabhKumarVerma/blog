@@ -6,5 +6,6 @@ User = get_user_model()
 class Blog(models.Model):
     blog_title = models.CharField(max_length=100,null=False,default='Anynomyous')
     blog_Author = models.ForeignKey('auth.User',on_delete=models.CASCADE,null=False,related_name='blog')
-    blog_date = models.DateField(auto_now_add=True,null=True)
     blog_text = models.TextField(null=False)
+    blog_date = models.DateField(auto_now_add=True,null=True)
+    

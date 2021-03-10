@@ -10,8 +10,9 @@ from .accountSerlizer import AccountSerlizers
 from django.contrib.auth import get_user_model
 from rest_framework.authtoken.models import Token
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework_simplejwt.tokens import RefreshToken
 # from .models import RegisterUser
-
+import jwt ,datetime
 User = get_user_model()
 
 @csrf_exempt
@@ -33,16 +34,29 @@ def CreateUser(request):
         })
 @csrf_exempt
 @api_view(['POST'])
+# @permission_classes([TokenAuthentication])
 def login(request):
-    try:
-        user_email = request.data['email']
-        user_password = request.data['password']
+    
+    user_email = request.data['email']
+    user_password = request.data['password']
 
-        user = User.objects.get(email = user_email)
-        if user.check_password(user_password):
-        
-            token, created = Token.objects.get_or_create(user=user)
-        return Response({'Logged In': user.email,'user':user.username,'token':token.key})
-    except:
-        return Response("User Does Not Exit")
+    user = User.objects.get(email = user_email)
+    payload ={
+        'id': user.id,
+        'exp':datetime.datetime.utcnow() + datetime.timedelta(minutes=180),
+        'iat':datetime.datetime.utcnow()
+    }
+    
+    if user.check_password(user_password):
+    
+        refresh = RefreshToken.for_user(user)
+    # token.set_exp(lifetime=datetime.timedelta(days=10))
+    return Response({
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+        'username':str(user.username),
+        'userid':str(user.id)
+        })
+    
+    
     
